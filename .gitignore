@@ -1,0 +1,25 @@
+# Rust / Cargo build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors & IDEs
+.idea/
+.vscode/
+.zed/
+*.swp
+*.swo
+*~
+
+# Local environment, logs & runtime state
+.env
+.env.*
+*.log
+*.tmp
+.devnook/

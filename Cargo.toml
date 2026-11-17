@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/devnook-core",
+    "crates/devnook-cli",
+    "crates/devnook-desktop",
+]
+default-members = ["crates/devnook-desktop"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+dirs = "6.0"
+gpui-kit = "0.9.1"
+regex = "1.11"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.43", features = ["full"] }
+uuid = { version = "1.11", features = ["v4", "serde"] }
+walkdir = "2.5"

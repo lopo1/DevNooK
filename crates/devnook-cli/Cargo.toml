@@ -1,0 +1,14 @@
+[package]
+name = "devnook-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CLI and read-only stdio MCP server for DevNook."
+
+[[bin]]
+name = "devnook"
+path = "src/main.rs"
+
+[dependencies]
+devnook-core = { path = "../devnook-core" }
+serde_json.workspace = true
