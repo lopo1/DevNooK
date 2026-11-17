@@ -203,6 +203,7 @@ pub fn render_ports_view(app: &mut DevNookApp, cx: &mut Context<DevNookApp>) -> 
                     div()
                         .id(("port-row", ix))
                         .flex()
+                        .flex_shrink_0()
                         .items_center()
                         .justify_between()
                         .p_3()

@@ -14,6 +14,7 @@ use devnook_core::storage::{load_state, save_state};
 use crate::ui::{palette, pipelines_view, ports_view, projects_view, services_view};
 use chrono::Local;
 use gpui_kit::component::{
+    Theme, ThemeMode,
     button::{Button, ButtonVariants as _},
     input::InputState,
 };
@@ -96,6 +97,7 @@ pub struct DevNookApp {
     pub plan_run_state: PlanRunState,
 
     // Runtime & channels
+    pub focus_handle: FocusHandle,
     pub runtimes: Arc<Mutex<HashMap<String, ServiceRuntime>>>,
     pub service_manager: Arc<ServiceManager>,
     pub pipeline_tx: mpsc::UnboundedSender<PipelineEvent>,
@@ -105,6 +107,15 @@ pub struct DevNookApp {
 impl DevNookApp {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let mut data = load_state();
+        Theme::change(
+            if data.dark_mode {
+                ThemeMode::Dark
+            } else {
+                ThemeMode::Light
+            },
+            None,
+            cx,
+        );
         if data.projects.is_empty() && !data.scan_roots.is_empty() {
             data.projects = scan_projects(&data.scan_roots, &data.projects);
             let _ = save_state(&data);
@@ -267,6 +278,9 @@ impl DevNookApp {
         })
         .detach();
 
+        let focus_handle = cx.focus_handle();
+        focus_handle.focus(window, cx);
+
         let mut app = Self {
             active_tab: ActiveTab::Projects,
             data,
@@ -298,6 +312,7 @@ impl DevNookApp {
             plan_name_input,
             plan_desc_input,
             plan_run_state: PlanRunState::default(),
+            focus_handle,
             runtimes,
             service_manager,
             pipeline_tx: pipe_tx,
@@ -335,6 +350,16 @@ impl DevNookApp {
 
     pub fn toggle_theme(&mut self, cx: &mut Context<Self>) {
         self.data.dark_mode = !self.data.dark_mode;
+        Theme::change(
+            if self.data.dark_mode {
+                ThemeMode::Dark
+            } else {
+                ThemeMode::Light
+            },
+            None,
+            cx,
+        );
+        cx.refresh_windows();
         self.persist();
         cx.notify();
     }
@@ -952,6 +977,22 @@ impl Render for DevNookApp {
         let pal = palette(self.data.dark_mode);
 
         div()
+            .track_focus(&self.focus_handle)
+            .on_key_down(cx.listener(|this, event: &KeyDownEvent, window, cx| {
+                if event.keystroke.key == "escape" {
+                    if this.scan_candidates.is_some() {
+                        this.scan_candidates = None;
+                        cx.notify();
+                    } else if window.is_fullscreen() {
+                        window.toggle_fullscreen();
+                    }
+                } else if event.keystroke.key == "f"
+                    && event.keystroke.modifiers.control
+                    && event.keystroke.modifiers.platform
+                {
+                    window.toggle_fullscreen();
+                }
+            }))
             .flex()
             .flex_col()
             .size_full()

@@ -17,12 +17,12 @@ pub struct Palette {
 pub fn palette(dark: bool) -> Palette {
     if dark {
         Palette {
-            bg: 0x0f172a,
-            surface: 0x1e293b,
+            bg: 0x0b1120,
+            surface: 0x162032,
             border: 0x334155,
-            text: 0xf1f5f9,
-            muted: 0x94a3b8,
-            accent: 0x3b82f6,
+            text: 0xf8fafc,
+            muted: 0xcbd5e1,
+            accent: 0x60a5fa,
         }
     } else {
         Palette {
@@ -30,7 +30,7 @@ pub fn palette(dark: bool) -> Palette {
             surface: 0xffffff,
             border: 0xe2e8f0,
             text: 0x0f172a,
-            muted: 0x64748b,
+            muted: 0x475569,
             accent: 0x2563eb,
         }
     }
